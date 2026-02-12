@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>For Amilah 💗</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(120deg, #ffd6e8, #ffeef6);
+      overflow-x: hidden;
+      text-align: center;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .active {
+      display: block;
+    }
+
+    h1 {
+      color: #b30059;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 20px;
+      background: #ff5fa2;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff2f8e;
+    }
+
+    .letter {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      line-height: 1.7;
+      color: #333;
+      font-size: 18px;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+      color: #ff5fa2;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh);
+        opacity: 0;
+      }
+    }
+
+    canvas {
+      position: fixed;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PASSCODE PAGE -->
+<div id="lock" class="page active">
+  <h1>Hey Amilah 💕</h1>
+  <p>Enter the passcode to unlock something special</p>
+
+  <input type="password" id="code" placeholder="••••••">
+  <br>
+  <button onclick="unlock()">Unlock 💗</button>
+</div>
+
+<!-- LETTER PAGE -->
+<div id="letter" class="page">
+  <h1>For My Baby 💖</h1>
+  <div class="letter" id="letterText"></div>
+</div>
+
+<!-- MUSIC -->
+<audio id="bgMusic" loop></audio>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti"></canvas>
+
+<script>
+  // Your exact letter
+  const letterText = `Hello babyyyyyyyyyyyyyy HAPPY 6 MONTHS MY BABYYYYY WOWWWW WHAT A MILESTONE I CANT BELIEVE IT BABYGIRL 🥳🥳🥳🥳🎉🎉🎉🎉these past 6 months have felt absolutely special and amazing to me baby this half of a year has alr felt like an eternity to me I have never been hit with such a wave of kindness magic and love by anyone or anything before in my life. To believe that it has been 6 months makes me feel so amazing and proud of how far we have come and how flipping grateful I am to have you in my life princess... (paste the full letter here exactly)`;
+
+
+  // TYPEWRITER EFFECT
+  function typeLetter(text, i = 0) {
+    const container = document.getElementById('letterText');
+    if (i < text.length) {
+      container.innerHTML += text.charAt(i);
+      setTimeout(() => typeLetter(text, i + 1), 15); // Adjust speed
+    }
+  }
+
+  // HEARTS
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💗";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }
+  setInterval(createHeart, 500);
+
+  // CONFETTI
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+  let W = window.innerWidth;
+  let H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+
+  const particles = [];
+  for (let i = 0; i < 150; i++) {
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*6+4,
+      d: Math.random()*150,
+      color: `hsl(${Math.random()*360}, 100%, 50%)`,
+      tilt: Math.floor(Math.random()*10)-10,
+      tiltAngleIncremental: Math.random()*0.07+0.05,
+      tiltAngle: 0
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.lineWidth = p.r/2;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x+p.tilt+p.r/4, p.y);
+      ctx.lineTo(p.x+p.tilt, p.y+p.tilt+ p.r/4);
+      ctx.stroke();
+    });
+    update();
+  }
+
+  let angle = 0;
+  function update() {
+    angle += 0.01;
+    particles.forEach((p, i) => {
+      p.tiltAngle += p.tiltAngleIncremental;
+      p.y += (Math.cos(angle + p.d) + 1 + p.r/2)/2;
+      p.x += Math.sin(angle);
+      p.tilt = Math.sin(p.tiltAngle) * 15;
+      if (p.y > H) {
+        particles[i] = {x: Math.random()*W, y: -10, r: p.r, d: p.d, color: p.color, tilt: p.tilt, tiltAngleIncremental: p.tiltAngleIncremental, tiltAngle: p.tiltAngle};
+      }
+    });
+  }
+  setInterval(draw, 20);
+
+  // UNLOCK FUNCTION
+  function unlock() {
+    const input = document.getElementById("code").value;
+    if (input === "120825") {
+      document.getElementById("lock").classList.remove("active");
+      document.getElementById("letter").classList.add("active");
+      typeLetter(letterText);
+
+      // Play music
+      const audio = document.getElementById("bgMusic");
+      audio.src = "music.mp3"; // Add your music file named "music.mp3" in same folder
+      audio.play();
+    } else {
+      alert("Wrong passcode 😭 try again baby");
+    }
+  }
+
+</script>
+</body>
+</html>
